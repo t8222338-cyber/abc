@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>私教薪资计算器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #3a8ffe 0%, #2962ff 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .work-requirements {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 12px 15px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 350px;
+            padding: 30px;
+            background-color: #f9fafc;
+            border-right: 1px solid #eef1f6;
+        }
+        
+        .result-section {
+            flex: 1.2;
+            min-width: 350px;
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #5a6c7d;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dce1e8;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3a8ffe;
+            box-shadow: 0 0 0 3px rgba(58, 143, 254, 0.1);
+        }
+        
+        .hint {
+            font-size: 14px;
+            color: #7f8c9a;
+            margin-top: 5px;
+        }
+        
+        .highlight {
+            color: #3a8ffe;
+            font-weight: 500;
+        }
+        
+        .warning {
+            color: #ff6b6b;
+            font-weight: 500;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .input-row .form-group {
+            flex: 1;
+        }
+        
+        .calc-btn {
+            background: linear-gradient(135deg, #3a8ffe 0%, #2962ff 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(58, 143, 254, 0.3);
+        }
+        
+        .calc-btn i {
+            margin-right: 8px;
+        }
+        
+        .result-box {
+            background-color: #f9fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 5px solid #3a8ffe;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .salary-total {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: #2962ff;
+            margin: 15px 0;
+        }
+        
+        .breakdown {
+            margin-top: 25px;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eef1f6;
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .breakdown-label {
+            color: #5a6c7d;
+            display: flex;
+            align-items: center;
+        }
+        
+        .breakdown-label i {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        
+        .breakdown-value {
+            font-weight: 500;
+        }
+        
+        .note-box {
+            background-color: #fff9e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 4px solid #ffc107;
+            font-size: 14px;
+        }
+        
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #e6a700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .note-title i {
+            margin-right: 8px;
+        }
+        
+        .commission-tiers {
+            margin-top: 25px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .tier-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .tier-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #d1e3ff;
+        }
+        
+        .tier-item:last-child {
+            border-bottom: none;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eef1f6;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+        .important {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+        
+        .details-section {
+            margin-top: 20px;
+            background-color: #f9fafc;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #eef1f6;
+        }
+        
+        .details-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #5a6c7d;
+            font-size: 16px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .detail-label {
+            color: #7f8c9a;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        
+        .status-good {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-bad {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .summary-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px dashed #eef1f6;
+        }
+        
+        .summary-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .summary-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2962ff;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: #7f8c9a;
+            margin-top: 5px;
+        }
+        
+        .icon {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+            margin-right: 8px;
+        }
+        
+        .attendance-info {
+            background-color: #e8f4ff;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .attendance-info i {
+            color: #3a8ffe;
+            margin-right: 8px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>私教薪资计算器</h1>
+            <p class="subtitle">根据个人销售额、课时数、出勤天数及续课率自动计算薪资</p>
+            <div class="work-requirements">
+                <i class="fas fa-info-circle"></i> 工作要求：听从店长分配，认真完成团课、体验课、销售任务及店内环境整理等工作
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <h2 class="section-title"><i class="fas fa-edit"></i> 输入当月数据</h2>
+                
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="sales"><i class="fas fa-chart-line"></i> 个人销售额（元）</label>
+                        <input type="number" id="sales" min="0" value="0" step="100">
+                        <div class="hint">输入当月个人销售总额</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lessons"><i class="fas fa-dumbbell"></i> 授课节数</label>
+                        <input type="number" id="lessons" min="0" value="0" step="1">
+                        <div class="hint">输入当月完成课时数</div>
+                    </div>
+                </div>
+                
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="workDays"><i class="fas fa-calendar-day"></i> 当月出勤天数</label>
+                        <input type="number" id="workDays" min="0" max="31" value="26" step="0.5">
+                        <div class="hint">输入当月实际出勤天数（满勤为26天）</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="avgPrice"><i class="fas fa-tag"></i> 新单平均单价（元）</label>
+                        <input type="number" id="avgPrice" min="0" value="200" step="10">
+                        <div class="hint">当月新单成交平均价</div>
+                    </div>
+                </div>
+                
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="renewalRate"><i class="fas fa-redo"></i> 续课率（%）</label>
+                        <input type="number" id="renewalRate" min="0" max="100" value="0" step="1">
+                        <div class="hint">仅当业绩>5万时考核</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fullAttendance"><i class="fas fa-calendar-check"></i> 全勤情况</label>
+                        <select id="fullAttendance">
+                            <option value="yes">全勤（获得全勤奖）</option>
+                            <option value="no">非全勤（无全勤奖）</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="isProtected"><i class="fas fa-shield-alt"></i> 是否在保护期内？</label>
+                    <select id="isProtected">
+                        <option value="no">否（入职超过4个月）</option>
+                        <option value="yes">是（入职4个月内）</option>
+                    </select>
+                    <div class="hint">新教练入职四个月内不考核续课率</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="socialSecurity"><i class="fas fa-file-invoice-dollar"></i> 社保缴纳</label>
+                    <select id="socialSecurity">
+                        <option value="yes">缴纳社保</option>
+                        <option value="no">未缴纳社保</option>
+                    </select>
+                    <div class="hint">底薪已包含社保缴纳基数</div>
+                </div>
+                
+                <div class="attendance-info">
+                    <i class="fas fa-info-circle"></i> 
+                    <span>底薪计算说明：基础工资2000元，按实际出勤天数计算，公式为：2000 ÷ 26 × 当月出勤天数</span>
+                </div>
+                
+                <button class="calc-btn" id="calculateBtn">
+                    <i class="fas fa-calculator"></i> 计算当月薪资
+                </button>
+                
+                <div class="commission-tiers">
+                    <div class="tier-title"><i class="fas fa-signal"></i> 销售提成阶梯标准</div>
+                    <div class="tier-item">
+                        <span>0 - 20,000元</span>
+                        <span class="highlight">2% 提成</span>
+                    </div>
+                    <div class="tier-item">
+                        <span>20,001 - 35,000元</span>
+                        <span class="highlight">3% 提成</span>
+                    </div>
+                    <div class="tier-item">
+                        <span>35,001 - 45,000元</span>
+                        <span class="highlight">6% 提成</span>
+                    </div>
+                    <div class="tier-item">
+                        <span>45,001 - 65,000元</span>
+                        <span class="highlight">7% 提成</span>
+                    </div>
+                    <div class="tier-item">
+                        <span>65,001元以上</span>
+                        <span class="highlight">9% 提成</span>
+                    </div>
+                </div>
+                
+                <div class="commission-tiers" style="margin-top: 15px;">
+                    <div class="tier-title"><i class="fas fa-clock"></i> 课时费计算标准</div>
+                    <div class="tier-item">
+                        <span>每月保底销售额</span>
+                        <span class="highlight">40,000元</span>
+                    </div>
+                    <div class="tier-item">
+                        <span>未完成保底</span>
+                        <span class="highlight">80元/节</span>
+                    </div>
+                    <div class="tier-item">
+                        <span>课时 ≤ 80节</span>
+                        <span class="highlight">22% 提成</span>
+                    </div>
+                    <div class="tier-item">
+                        <span>课时 ≥ 100节</span>
+                        <span class="highlight">26% 提成</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title"><i class="fas fa-file-invoice-dollar"></i> 薪资明细</h2>
+                
+                <div class="result-box">
+                    <div style="text-align: center; color: #7f8c9a; font-size: 16px;">当月实发薪资总额</div>
+                    <div class="salary-total" id="totalSalary">0.00</div>
+                    <div style="text-align: center; color: #7f8c9a; font-size: 14px;">元</div>
+                    
+                    <div class="breakdown">
+                        <div class="breakdown-item">
+                            <span class="breakdown-label"><i class="fas fa-money-check-alt"></i> 底薪</span>
+                            <span class="breakdown-value" id="baseSalary">2,000.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label"><i class="fas fa-calendar-check"></i> 全勤奖</span>
+                            <span class="breakdown-value" id="attendanceBonus">0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label"><i class="fas fa-ad"></i> 营销金</span>
+                            <span class="breakdown-value">300.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label"><i class="fas fa-chart-line"></i> 销售提成</span>
+                            <span class="breakdown-value" id="salesCommission">0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label"><i class="fas fa-dumbbell"></i> 课时费</span>
+                            <span class="breakdown-value" id="lessonFee">0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-section">
+                        <div class="summary-item">
+                            <div class="summary-value" id="totalBeforeTax">0.00</div>
+                            <div class="summary-label">税前合计</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="taxAndInsurance">0.00</div>
+                            <div class="summary-label">税/社保</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="finalSalary">0.00</div>
+                            <div class="summary-label">实发薪资</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="details-section">
+                    <div class="details-title"><i class="fas fa-calculator"></i> 计算详情</div>
+                    <div class="detail-item">
+                        <span class="detail-label">出勤天数</span>
+                        <span class="detail-value" id="workDaysDisplay">26天</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">底薪计算</span>
+                        <span class="detail-value" id="baseSalaryCalc">2000 ÷ 26 × 26 = 2000.00</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">销售额区间</span>
+                        <span class="detail-value" id="salesRange">0-20,000元</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">基础提成比例</span>
+                        <span class="detail-value" id="commissionRate">2%</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">续课率考核状态</span>
+                        <span class="detail-value" id="renewalCheck">不考核 <span class="status-indicator status-good">保护期</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">提成调整比例</span>
+                        <span class="detail-value" id="commissionAdjust">0%</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">实际提成比例</span>
+                        <span class="detail-value" id="actualCommissionRate">2%</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">保底销售额完成</span>
+                        <span class="detail-value" id="meetTarget">是 <span class="status-indicator status-good">达标</span></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">课时费计算方式</span>
+                        <span class="detail-value" id="lessonMethod">平均单价 × 22%</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">每节课时费</span>
+                        <span class="detail-value" id="lessonFeePerClass">44.00元</span>
+                    </div>
+                </div>
+                
+                <div class="note-box">
+                    <div class="note-title"><i class="fas fa-exclamation-circle"></i> 重要说明与考核规则</div>
+                    <p><i class="fas fa-check-circle" style="color: #28a745;"></i> <strong>底薪计算</strong>：基础工资2000元，按实际出勤天数计算，公式为：2000 ÷ 26 × 当月出勤天数</p>
+                    <p><i class="fas fa-check-circle" style="color: #28a745;"></i> <strong>全勤奖</strong>：200元根据全勤情况发放（不迟到、不早退、在岗履职）</p>
+                    <p><i class="fas fa-check-circle" style="color: #28a745;"></i> <strong>营销金</strong>：300元为固定部分</p>
+                    <p><i class="fas fa-check-circle" style="color: #28a745;"></i> <strong>销售额保底</strong>：个人销售额保底4万，未完成则课时费按80元/节计算</p>
+                    <p><i class="fas fa-check-circle" style="color: #28a745;"></i> <strong>课时费比例</strong>：≤80节为22%，≥100节为26%（81-99节按22%计算）</p>
+                    <p><i class="fas fa-check-circle" style="color: #28a745;"></i> <strong>续课率考核规则</strong>：个人业绩超5万且不在保护期内需考核续课率</p>
+                    <p style="margin-left: 20px;"><i class="fas fa-arrow-right"></i> 续课率≥35%：正常提成</p>
+                    <p style="margin-left: 20px;"><i class="fas fa-arrow-right"></i> 续课率25%-35%：销售提成减2%</p>
+                    <p style="margin-left: 20px;"><i class="fas fa-arrow-right"></i> 续课率&lt;25%：销售提成减3%</p>
+                    <p><i class="fas fa-check-circle" style="color: #28a745;"></i> <strong>保护期</strong>：新教练入职四个月内不考核续课率</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculateBtn');
+            
+            // 计算按钮点击事件
+            calculateBtn.addEventListener('click', calculateSalary);
+            
+            // 初始计算一次
+            calculateSalary();
+            
+            function calculateSalary() {
+                // 获取输入值
+                const sales = parseFloat(document.getElementById('sales').value) || 0;
+                const lessons = parseInt(document.getElementById('lessons').value) || 0;
+                const workDays = parseFloat(document.getElementById('workDays').value) || 26;
+                const avgPrice = parseFloat(document.getElementById('avgPrice').value) || 200;
+                const renewalRate = parseFloat(document.getElementById('renewalRate').value) || 0;
+                const isProtected = document.getElementById('isProtected').value === 'yes';
+                const fullAttendance = document.getElementById('fullAttendance').value === 'yes';
+                const socialSecurity = document.getElementById('socialSecurity').value === 'yes';
+                
+                // 计算底薪（按实际出勤天数）
+                const dailyBaseSalary = 2000 / 26;
+                const baseSalary = dailyBaseSalary * workDays;
+                
+                // 计算销售提成
+                let commissionRate;
+                let salesRange;
+                
+                if (sales <= 20000) {
+                    commissionRate = 0.02;
+                    salesRange = "0-20,000元";
+                } else if (sales <= 35000) {
+                    commissionRate = 0.03;
+                    salesRange = "20,001-35,000元";
+                } else if (sales <= 45000) {
+                    commissionRate = 0.06;
+                    salesRange = "35,001-45,000元";
+                } else if (sales <= 65000) {
+                    commissionRate = 0.07;
+                    salesRange = "45,001-65,000元";
+                } else {
+                    commissionRate = 0.09;
+                    salesRange = "65,001元以上";
+                }
+                
+                // 续课率考核调整
+                let renewalCheck = "";
+                let renewalStatus = "";
+                let commissionAdjust = 0;
+                
+                if (sales > 50000 && !isProtected) {
+                    if (renewalRate >= 35) {
+                        renewalCheck = "达标（≥35%）";
+                        renewalStatus = "status-good";
+                    } else if (renewalRate >= 25) {
+                        commissionAdjust = -0.02; // 减2%
+                        renewalCheck = "未达标（25%-35%）";
+                        renewalStatus = "status-warning";
+                    } else {
+                        commissionAdjust = -0.03; // 减3%
+                        renewalCheck = "未达标（<25%）";
+                        renewalStatus = "status-bad";
+                    }
+                } else if (sales > 50000 && isProtected) {
+                    renewalCheck = "保护期内不考核";
+                    renewalStatus = "status-good";
+                } else {
+                    renewalCheck = "销售额未超5万，不考核";
+                    renewalStatus = "status-good";
+                }
+                
+                // 应用续课率调整后的提成比例
+                const actualCommissionRate = Math.max(0, commissionRate + commissionAdjust);
+                
+                // 计算销售提成
+                const salesCommission = sales * actualCommissionRate;
+                
+                // 计算课时费
+                let lessonRate;
+                if (lessons <= 80) {
+                    lessonRate = 0.22;
+                } else if (lessons >= 100) {
+                    lessonRate = 0.26;
+                } else {
+                    // 81-99节之间，需要根据具体情况确定，这里假设为22%
+                    lessonRate = 0.22;
+                }
+                
+                // 检查是否完成保底4万
+                const meetTarget = sales >= 40000;
+                const meetTargetStatus = meetTarget ? "status-good" : "status-bad";
+                const meetTargetText = meetTarget ? "达标" : "未达标";
+                
+                const lessonFeePerClass = meetTarget ? avgPrice * lessonRate : 80;
+                const lessonFee = lessons * lessonFeePerClass;
+                
+                // 课时费计算方式描述
+                let lessonMethod = "";
+                if (meetTarget) {
+                    if (lessons <= 80) {
+                        lessonMethod = `平均单价 × 22% = ${avgPrice} × 22%`;
+                    } else if (lessons >= 100) {
+                        lessonMethod = `平均单价 × 26% = ${avgPrice} × 26%`;
+                    } else {
+                        lessonMethod = `平均单价 × 22% = ${avgPrice} × 22%`;
+                    }
+                } else {
+                    lessonMethod = "未完成保底，固定80元/节";
+                }
+                
+                // 计算全勤奖
+                const attendanceBonus = fullAttendance ? 200 : 0;
+                
+                // 计算税前合计
+                const marketingBonus = 300;
+                const totalBeforeTax = baseSalary + attendanceBonus + marketingBonus + salesCommission + lessonFee;
+                
+                // 计算税和社保（简化计算，假设社保按底薪基数10%计算）
+                let taxAndInsurance = 0;
+                if (socialSecurity) {
+                    // 假设社保个人部分为底薪的10%
+                    taxAndInsurance = baseSalary * 0.10;
+                }
+                
+                // 个人所得税简化计算（起征点5000）
+                let personalTax = 0;
+                const taxableIncome = totalBeforeTax - taxAndInsurance - 5000; // 减去社保和起征点
+                if (taxableIncome > 0) {
+                    // 简化计算，按3%税率
+                    personalTax = taxableIncome * 0.03;
+                }
+                
+                taxAndInsurance += personalTax;
+                
+                // 计算实发薪资
+                const finalSalary = totalBeforeTax - taxAndInsurance;
+                
+                // 更新结果显示
+                document.getElementById('totalSalary').textContent = finalSalary.toFixed(2);
+                document.getElementById('totalBeforeTax').textContent = totalBeforeTax.toFixed(2);
+                document.getElementById('taxAndInsurance').textContent = taxAndInsurance.toFixed(2);
+                document.getElementById('finalSalary').textContent = finalSalary.toFixed(2);
+                
+                document.getElementById('baseSalary').textContent = baseSalary.toFixed(2);
+                document.getElementById('attendanceBonus').textContent = attendanceBonus.toFixed(2);
+                document.getElementById('salesCommission').textContent = salesCommission.toFixed(2);
+                document.getElementById('lessonFee').textContent = lessonFee.toFixed(2);
+                
+                // 更新详细计算过程
+                document.getElementById('workDaysDisplay').textContent = `${workDays}天`;
+                document.getElementById('baseSalaryCalc').textContent = `2000 ÷ 26 × ${workDays} = ${baseSalary.toFixed(2)}`;
+                document.getElementById('salesRange').textContent = salesRange;
+                document.getElementById('commissionRate').textContent = `${(commissionRate * 100).toFixed(0)}%`;
+                
+                const renewalCheckElement = document.getElementById('renewalCheck');
+                renewalCheckElement.innerHTML = `${renewalCheck} <span class="status-indicator ${renewalStatus}">${renewalStatus === "status-good" ? "通过" : "注意"}</span>`;
+                
+                document.getElementById('commissionAdjust').textContent = `${(commissionAdjust * 100).toFixed(0)}%`;
+                document.getElementById('actualCommissionRate').textContent = `${(actualCommissionRate * 100).toFixed(1)}%`;
+                
+                const meetTargetElement = document.getElementById('meetTarget');
+                meetTargetElement.innerHTML = `${meetTarget ? "是" : "否"} <span class="status-indicator ${meetTargetStatus}">${meetTargetText}</span>`;
+                
+                document.getElementById('lessonMethod').textContent = lessonMethod;
+                document.getElementById('lessonFeePerClass').textContent = `${lessonFeePerClass.toFixed(2)}元`;
+                
+                // 根据结果添加颜色提示
+                const totalSalaryElement = document.getElementById('totalSalary');
+                if (finalSalary >= 15000) {
+                    totalSalaryElement.style.color = "#ff6b6b";
+                } else if (finalSalary >= 8000) {
+                    totalSalaryElement.style.color = "#ffa726";
+                } else {
+                    totalSalaryElement.style.color = "#2962ff";
+                }
+                
+                // 更新税前合计颜色
+                const totalBeforeTaxElement = document.getElementById('totalBeforeTax');
+                if (totalBeforeTax >= 20000) {
+                    totalBeforeTaxElement.style.color = "#ff6b6b";
+                } else if (totalBeforeTax >= 10000) {
+                    totalBeforeTaxElement.style.color = "#ffa726";
+                } else {
+                    totalBeforeTaxElement.style.color = "#2962ff";
+                }
+                
+                // 全勤奖提示
+                if (!fullAttendance && workDays < 26) {
+                    document.getElementById('attendanceBonus').innerHTML = `<span class="warning">0.00</span>`;
+                }
+                
+                // 出勤天数提示
+                if (workDays < 26) {
+                    document.getElementById('workDaysDisplay').innerHTML = `<span class="warning">${workDays}天</span>`;
+                }
+            }
+            
+            // 为输入框添加即时计算功能
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', calculateSalary);
+                input.addEventListener('change', calculateSalary);
+            });
+        });
+    </script>
+</body>
+</html>
